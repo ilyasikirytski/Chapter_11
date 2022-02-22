@@ -11,10 +11,10 @@ public class Main {
     public static void main(String[] args) {
         Semaphore semaphore = new Semaphore(3, true);
 
-        for (int i = 0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             try {
                 Thread.sleep(1000);
-                new CallCenter("# "+ i, semaphore).start();
+                new CallCenter("# " + i, semaphore).start();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

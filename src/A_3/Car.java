@@ -35,10 +35,11 @@ public class Car implements Runnable {
             e.printStackTrace();
         }
     }
-        @Override
-        public String toString () {
-            return "Car{" +
-                    "name='" + carName + '\'' +
-                    '}';
-        }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "name='" + carName + '\'' +
+                '}';
     }
+}
