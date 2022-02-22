@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 public class BusStation extends Thread {
     private Semaphore semaphore;
     private int busNumber;
-    private int busCountOnStation = 0;
 
     BusStation(int busNumber, Semaphore semaphore) {
         this.semaphore = semaphore;
@@ -28,7 +27,6 @@ public class BusStation extends Thread {
             } else {
                 System.out.printf("Автобус №%s не дождался свободного места и уехал\n", busNumber);
                 Thread.sleep(new Random().nextInt(20000));
-//                System.out.println("Автобус " + busNumber + " вернулся для ожидания");
                 run();
             }
         } catch (InterruptedException e) {

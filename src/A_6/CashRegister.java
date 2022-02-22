@@ -26,7 +26,6 @@ public class CashRegister extends Thread {
             } else {
                 System.out.printf("покупатель №%s не дождался обслуживания и перешёл в другую очередь\n", customerIndex);
                 Thread.sleep(new Random().nextInt(20000));
-//                System.out.println("Автобус " + busNumber + " вернулся для ожидания");
                 run();
             }
         } catch (InterruptedException e) {

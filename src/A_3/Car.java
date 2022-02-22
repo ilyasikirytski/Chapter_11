@@ -6,12 +6,10 @@ import java.util.concurrent.TimeUnit;
 
 public class Car implements Runnable {
     private String carName;
-    private final Parking parking;
     private Semaphore semaphore;
 
     public Car(Parking parking, String name) {
         this.semaphore = parking.semaphore;
-        this.parking = parking;
         this.carName = name;
     }
 
