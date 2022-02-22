@@ -20,7 +20,7 @@ public class Car implements Runnable {
             semaphore.acquire();
             int parkingNumber = -1;
 //            synchronized (parking.parkingPlaces) {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < parking.parkingPlaces.length; i++)
                 if (!parking.parkingPlaces[i]) {      //Если место свободно
                     parking.parkingPlaces[i] = true;  //занимаем его
                     parkingNumber = i;         //Наличие свободного места, гарантирует семафор
