@@ -1,6 +1,8 @@
 package A_3;
 
+import java.util.Random;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class Car implements Runnable {
     private String carName;
@@ -15,32 +17,28 @@ public class Car implements Runnable {
 
     @Override
     public void run() {
+        System.out.printf("Автомобиль №%s подъехал к парковке.\n", carName);
         try {
-            System.out.printf("Автомобиль №%s подъехал к парковке.\n", carName);
-            semaphore.acquire();
-            int parkingNumber = -1;
-//            synchronized (parking.parkingPlaces) {
-            for (int i = 0; i < parking.parkingPlaces.length; i++)
-                if (!parking.parkingPlaces[i]) {      //Если место свободно
-                    parking.parkingPlaces[i] = true;  //занимаем его
-                    parkingNumber = i;         //Наличие свободного места, гарантирует семафор
-                    System.out.printf("Автомобиль №%s припарковался на месте %d.\n", carName, i);
-                    break;
-                }
-//            }
-            Thread.sleep(1000);
-            parking.parkingPlaces[parkingNumber] = false;
-            semaphore.release();
-            System.out.printf("Автомобиль №%s покинул парковку.\n", carName);
+            if (semaphore.tryAcquire(1, 2000, TimeUnit.MILLISECONDS)) {
+                semaphore.acquire();
+                System.out.println("Автомобиль " + carName + " припарковался");
+                Thread.sleep(new Random().nextInt(10000));
+                semaphore.release(2);
+                System.out.println("Автомобиль " + carName + " выехал");
+            } else {
+                System.out.println("Автомобиль " + carName + " не дождался свободного места и уехал");
+                Thread.sleep(new Random().nextInt(20000));
+                System.out.println("Автомоблиь " + carName + " вернулся для ожидания");
+                run();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-    @Override
-    public String toString() {
-        return "Car{" +
-                "name='" + carName + '\'' +
-                '}';
+        @Override
+        public String toString () {
+            return "Car{" +
+                    "name='" + carName + '\'' +
+                    '}';
+        }
     }
-}
