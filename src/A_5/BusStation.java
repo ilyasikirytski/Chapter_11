@@ -9,9 +9,9 @@ public class BusStation extends Thread {
     private int busNumber;
     private int busCountOnStation = 0;
 
-    BusStation(int name, Semaphore semaphore) {
+    BusStation(int busNumber, Semaphore semaphore) {
         this.semaphore = semaphore;
-        this.busNumber = name;
+        this.busNumber = busNumber;
     }
 
 
