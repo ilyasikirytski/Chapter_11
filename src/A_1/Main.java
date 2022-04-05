@@ -13,6 +13,10 @@ package A_1;/*
 причала может стоять один корабль. Корабль может загружаться у причала,
 разгружаться или выполнять оба действия.
  */
+/*
+сделать через треды
+на основе парковки найти задачу рабочую
+ */
 
 import java.util.concurrent.Semaphore;
 
@@ -23,8 +27,8 @@ public class Main {
         port1.setCountOfContainers(50);
         Port port2 = new Port("port2", 50);
 
-        new Thread(new Ship(semaphore, "ship1", 10, port1, port2)).start();
-        new Thread(new Ship(semaphore, "ship2", 10, port1, port2)).start();
-
+        for (int i = 0; i < 3; i++) {
+            new Ship(semaphore, "ship" + i, 10, port1, port2).start();
+        }
     }
 }

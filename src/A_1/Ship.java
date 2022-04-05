@@ -2,7 +2,7 @@ package A_1;
 
 import java.util.concurrent.Semaphore;
 
-public class Ship implements Runnable {
+public class Ship extends Thread {
     private final Semaphore semaphore;
     private final Port deliveryFrom;
     private final Port deliveryTo;
@@ -38,6 +38,7 @@ public class Ship implements Runnable {
     }
 
     private void loadShip() {
+//        synchronized (this) {
         try {
             if (deliveryFrom.getCountOfContainers() > 0) {
                 this.countOfContainers = deliveryFrom.loadCargo(containerCapacity, deliveryFrom);
@@ -50,6 +51,7 @@ public class Ship implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+//        }
     }
 
 
