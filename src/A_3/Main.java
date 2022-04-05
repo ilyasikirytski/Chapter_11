@@ -10,10 +10,10 @@ public class Main {
     public static void main(String[] args) {
         Parking parking = new Parking();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 20; i++) {
             try {
-                Thread.sleep(1000);
-                new Thread(new Car(parking, "" + i)).start();
+                Thread.sleep(100);
+                new Thread(new Car(parking, i)).start();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
