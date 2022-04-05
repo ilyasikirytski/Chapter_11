@@ -4,7 +4,7 @@
 Если все места заняты, то автомобиль не станет ждать больше определенного времени и уедет на другую
 стоянку.
  */
-package A_3;
+package A_3.async;
 
 public class Main {
     public static void main(String[] args) {
