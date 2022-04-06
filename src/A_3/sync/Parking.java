@@ -1,36 +1,43 @@
 package A_3.sync;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+
 public class Parking implements ParkingFun {
-    private final boolean[] parkingPlaces;
+    private final int timeToWait;
+    private final int timeForParking;
+    /*
+    найти проблему с колекцией и решить
+     */
+    private final AtomicIntegerArray parkingPlaces;
+    private final Semaphore semaphore;
 
-    public Parking(int capacity) {
-        parkingPlaces = new boolean[capacity];
+    public Parking(int capacity, int timeToWait, int timeForParking) {
+        parkingPlaces = new AtomicIntegerArray(capacity);
+        semaphore = new Semaphore(capacity);
+        this.timeToWait = timeToWait;
+        this.timeForParking = timeForParking;
     }
-/*
-метод park без аргументов при вызове возвращает номер свободного места или -1 если мест нет.
- */
+
     @Override
-    public int park() {
+    public void park() throws InterruptedException {
+        String carName = Thread.currentThread().getName();
         int parkNumber = 0;
-        boolean allTaken = false;
-        for (int i = 0; i < parkingPlaces.length; i++) {
-            allTaken = parkingPlaces[i];
-            if (!parkingPlaces[i]) {
-                parkingPlaces[i] = true;
-                parkNumber = i;
-                break;
+        if (semaphore.tryAcquire(timeToWait, TimeUnit.MILLISECONDS)) {
+            for (int i = 0; i < parkingPlaces.length(); i++) {
+                if (parkingPlaces.compareAndSet(i, 0, 1)) {
+                    parkNumber = i;
+                    break;
+                }
             }
-        }
-        if (allTaken) {
-            return -1;
+            System.out.printf("%s - parked %s\n", carName, parkNumber);
+            Thread.sleep(timeForParking);
+            parkingPlaces.set(parkNumber, 0);
+            System.out.printf("%s - unParked %s\n", carName, parkNumber);
+            semaphore.release();
         } else {
-            return parkNumber;
+            System.out.printf("%s - can't park\n", carName);
         }
-    }
-
-    @Override
-    public void unPark(Car car) {
-        parkingPlaces[car.parkNumber] = false;
-        System.out.printf("auto %s - gone form place %s\n", car.carName, car.parkNumber);
     }
 }
