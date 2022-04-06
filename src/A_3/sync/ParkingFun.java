@@ -1,6 +1,6 @@
 package A_3.sync;
 
 public interface ParkingFun {
-    void park(Car car);
+    int park();
     void unPark(Car car);
 }
