@@ -26,9 +26,8 @@ public class Port implements PortFun {
                 break;
             }
         }
-        this.countOfContainers.set(countOfContainers.intValue() - shipContainerCapacity);
         System.out.printf("p1 / s%s / b%s: load %s-containers/ countOfContainers-p1-%s\n",
-                shipName, berthNumber, shipContainerCapacity, this.countOfContainers.get());
+                shipName, berthNumber, shipContainerCapacity, this.countOfContainers.addAndGet(-shipContainerCapacity));
         portBerths.set(berthNumber, 0);
         System.out.printf("p1 / s%s / b%s: go to port2\n", shipName, berthNumber);
         semaphore.release();
@@ -46,9 +45,8 @@ public class Port implements PortFun {
                 break;
             }
         }
-        this.countOfContainers.set(countOfContainers.intValue() - shipContainerCapacity);
         System.out.printf("p2 / s%s / b%s: UnLoad %s containers/ countOfContainers-p2-%s\n",
-                shipName, berthNumber, shipContainerCapacity, this.countOfContainers.get());
+                shipName, berthNumber, shipContainerCapacity, this.countOfContainers.addAndGet(shipContainerCapacity));
         portBerths.set(berthNumber, 0);
         semaphore.release();
     }
