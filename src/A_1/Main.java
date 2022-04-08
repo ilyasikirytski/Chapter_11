@@ -24,11 +24,11 @@ public class Main {
     public static void main(String[] args) {
         Semaphore semaphore = new Semaphore(1, true);
         Port port1 = new Port("port1", 100);
-        port1.setCountOfContainers(50);
+        port1.setCountOfContainers(100);
         Port port2 = new Port("port2", 50);
 
-        for (int i = 0; i < 3; i++) {
-            new Ship(semaphore, "ship" + i, 10, port1, port2).start();
+        for (int i = 0; i < 6; i++) {
+            new Ship(semaphore,10, port1, port2).start();
         }
     }
 }
