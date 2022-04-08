@@ -18,6 +18,7 @@ public class Ship extends Thread {
             String shipName = Thread.currentThread().getName();
             System.out.printf("s%s: arrived to p1\n", shipName);
             port.loadContainers(shipContainerCapacity);
+            System.out.printf("s%s: arrived to p2\n", shipName);
             port2.unLoadContainers(shipContainerCapacity);
         } catch (InterruptedException e) {
             e.printStackTrace();
