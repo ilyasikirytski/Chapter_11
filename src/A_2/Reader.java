@@ -1,25 +1,21 @@
 package A_2;
 
-public class Reader implements Runnable {
-    private final String name;
+public class Reader extends Thread {
     private final Library library;
-//    private final CopyOnWriteArrayList<Book> books = new CopyOnWriteArrayList<>();
 
-    public Reader(Library library, String name) {
+    public Reader(Library library, String readerName) {
+        super(readerName);
         this.library = library;
-        this.name = name;
     }
 
     @Override
     public void run() {
         try {
-            Library.SEMAPHORE.acquire();
-            library.takeBookToReadingRoom(name);
-            library.takeBookHome(name);
+            System.out.printf("%s пришёл в билитотеку\n", Thread.currentThread().getName());
+            library.takeBookToReadingRoom();
+            library.takeBookHome();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            Library.SEMAPHORE.release();
         }
     }
 }

@@ -4,61 +4,74 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
 public class Library {
-    static final Semaphore SEMAPHORE = new Semaphore(1, true);
+    private final Semaphore semaphore = new Semaphore(5);
     CopyOnWriteArrayList<Book> libraryBooks = new CopyOnWriteArrayList<>();
-    CopyOnWriteArrayList<Book> readingBooks = new CopyOnWriteArrayList<>();
-    CopyOnWriteArrayList<Book> homeBooks = new CopyOnWriteArrayList<>();
 
     public void addBook(Book book) {
         this.libraryBooks.add(book);
     }
 
-    public void takeBookToReadingRoom(String name) {
+    public void takeBookToReadingRoom() {
         try {
-            for (Book b : libraryBooks) {
-                if (!libraryBooks.isEmpty() && b.isReadingInLibraryOnly) {
-                    readingBooks.add(b);
-                    libraryBooks.remove(b);
-                    System.out.println(name + " взял книгу: " + b.getIndex() + ", в читальный зал");
-                    if (readingBooks.size() >= 2) {
-                        returnBook(name);
+            semaphore.acquire();
+            String readerName = Thread.currentThread().getName();
+            for (Book book : libraryBooks) {
+                if (book.isReadingInLibraryOnly) {
+                    if (!book.isTaken) {
+                        book.isTaken = true;
+                        System.out.println(readerName + " взял " + book.getName() + " в зал");
+                        Thread.sleep(1000);
+                        returnBook();
+                        Thread.sleep(1000);
+                    } else {
+                        System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
                     }
                 } else {
-                    System.out.println(name + " хотел взять книгу: " + b.getIndex() + " в читальный зал - но она доступна только для дома");
+                    System.out.println(readerName + " хотел взять " + book.getName() + " в зал - но она доступна только для дома");
                 }
-                Thread.sleep(1000);
             }
+            semaphore.release();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void takeBookHome(String name) {
+    public void takeBookHome() {
         try {
-            for (Book b : libraryBooks) {
-                if (!libraryBooks.isEmpty() && !b.isReadingInLibraryOnly) {
-                    homeBooks.add(b);
-                    libraryBooks.remove(b);
-                    System.out.println(name + " взял книгу: " + b.getIndex() + ", домой");
-//                    returnBook();
+            semaphore.acquire();
+            String readerName = Thread.currentThread().getName();
+            for (Book book : libraryBooks) {
+                if (!book.isReadingInLibraryOnly) {
+                    if (!book.isTaken) {
+                        book.isTaken = true;
+                        System.out.println(readerName + " взял " + book.getName() + ", домой");
+                        Thread.sleep(1000);
+                        returnBook();
+                        Thread.sleep(1000);
+                    } else {
+                        System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+                    }
                 } else {
-                    System.out.println(name + " хотел взять книгу: " + b.getIndex() + " домой - но она доступна только для читального зала");
+                    System.out.println(readerName + " хотел взять " + book.getName() + " домой - но она доступна только для читального зала");
                 }
-                Thread.sleep(1000);
             }
+            semaphore.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void returnBook(String name) {
+    public void returnBook() {
         try {
-            for (Book b : readingBooks) {
-                libraryBooks.add(b);
-                readingBooks.remove(b);
-                System.out.println(name + " вернул книгу: " + b.getIndex());
-                Thread.sleep(1000);
+            semaphore.acquire();
+            String readerName = Thread.currentThread().getName();
+            for (Book book : libraryBooks) {
+                if (book.isTaken) {
+                    book.isTaken = false;
+                    System.out.println(readerName + " вернул книгу: " + book.getName());
+                }
             }
+            semaphore.release();
         } catch (InterruptedException interruptedException) {
             interruptedException.printStackTrace();
         }

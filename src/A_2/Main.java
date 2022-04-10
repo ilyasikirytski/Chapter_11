@@ -7,19 +7,14 @@ package A_2;
 
 public class Main {
     public static void main(String[] args) {
-
         Library library = new Library();
-        library.addBook(new Book(false, "a", 1));
-        library.addBook(new Book(true, "b", 2));
-        library.addBook(new Book(false, "c", 3));
-        library.addBook(new Book(true, "d", 4));
+        library.addBook(new Book(true, "LibraryBook1"));
+        library.addBook(new Book(false, "HomeBook1"));
+        library.addBook(new Book(true, "LibraryBook2"));
+        library.addBook(new Book(false, "HomeBook2"));
 
-        for (Book b : library.libraryBooks) {
-            System.out.printf("%s-%s; \n", b.getIndex(), b.getName());
+        for (int i = 0; i < 5; i++) {
+            new Reader(library, "" + i).start();
         }
-
-        new Thread(new Reader(library, "Читатель_1")).start();
-        new Thread(new Reader(library, "Читатель_2")).start();
-        new Thread(new Reader(library, "Читатель_3")).start();
     }
 }
