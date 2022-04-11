@@ -5,19 +5,12 @@
  */
 package A_5;
 
-import java.util.concurrent.Semaphore;
-
 public class Main {
     public static void main(String[] args) {
-        Semaphore semaphore = new Semaphore(3, true);
+        Route route = new Route(5, 2);
 
         for (int i = 0; i < 5; i++) {
-            try {
-                Thread.sleep(1000);
-                new BusStation(i, semaphore).start();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            new Bus("" + i, route).start();
         }
     }
 }
