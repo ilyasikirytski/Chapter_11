@@ -1,32 +1,28 @@
 package A_4;
 
-import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-public class CallCenter extends Thread {
-    private Semaphore semaphore;
-    private String name;
+public class CallCenter {
+    private final Semaphore semaphore;
 
-    CallCenter(String name, Semaphore semaphore) {
-        this.semaphore = semaphore;
-        this.name = name;
+    CallCenter(int countOfOperators) {
+        this.semaphore = new Semaphore(countOfOperators);
     }
 
-    @Override
-    public void run() {
+    public void call() {
         try {
+            String clientName = Thread.currentThread().getName();
             if (semaphore.tryAcquire(1, 2000, TimeUnit.MILLISECONDS)) {
-                semaphore.acquire();
-                System.out.println("Сотруднику колл центра дозвонился клиент " + name);
-                Thread.sleep(new Random().nextInt(10000));
-                semaphore.release(2);
-                System.out.println("Клиент " + name + " получил информацию и положил трубку");
+                System.out.println(clientName + " дозвонился в колл-центр");
+                Thread.sleep(2000);
+                System.out.println(clientName + " получил информацию и положил трубку");
+                semaphore.release();
             } else {
-                System.out.println("Клиент " + name + " не дождался и положил трубку");
-                Thread.sleep(new Random().nextInt(20000));
-                System.out.println("Клиент " + name + " перезванивает");
-                run();
+                System.out.println(clientName + " не дождался и положил трубку");
+                Thread.sleep(2000);
+                System.out.println(clientName + " перезванивает");
+                call();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

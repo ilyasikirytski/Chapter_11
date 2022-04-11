@@ -9,15 +9,10 @@ import java.util.concurrent.Semaphore;
 
 public class Main {
     public static void main(String[] args) {
-        Semaphore semaphore = new Semaphore(3, true);
+        CallCenter callCenter = new CallCenter(2);
 
         for (int i = 0; i < 5; i++) {
-            try {
-                Thread.sleep(1000);
-                new CallCenter("# " + i, semaphore).start();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            new Client("" + i, callCenter).start();
         }
     }
 }
