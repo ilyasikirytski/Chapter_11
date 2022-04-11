@@ -1,8 +1,7 @@
 package A_4;
 
 public class Client extends Thread {
-    CallCenter callCenter;
-    private boolean informationReceived;
+    private final CallCenter callCenter;
 
     public Client(String clientName, CallCenter callCenter) {
         super(clientName);
