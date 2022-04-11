@@ -9,16 +9,10 @@ import java.util.concurrent.Semaphore;
 
 public class Main {
     public static void main(String[] args) {
-        Semaphore semaphore = new Semaphore(3, true);
-
-        for (int i = 0; i < 5; i++) {
-            try {
-                new CashRegister(semaphore, i).start();
-                Thread.sleep(1000);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        Semaphore semaphore = new Semaphore(5);
+        CashRegister cashRegister = new CashRegister(semaphore);
+        for (int i = 0; i < 10; i++) {
+            new Client("" + i, cashRegister).start();
         }
     }
 }
