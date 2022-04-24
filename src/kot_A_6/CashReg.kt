@@ -1,26 +1,48 @@
 package kot_A_6
 
-import java.util.*
-import java.util.concurrent.Semaphore
-import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Semaphore
 
-class CashReg(var semaphore: Semaphore, var customerIndex: Int) {
-    fun run() {
+//class CashReg(var semaphore: kotlinx.coroutines.sync.Semaphore, var customerIndex: Int) {
+//    suspend fun run() {
+//        println("покупатель $customerIndex встал в очередь.")
+//        semaphore.withPermit {
+//            println("покупатель $customerIndex выбирает товары")
+//            delay(3000)
+//            println("покупатель $customerIndex сделал покупку и ушёл")
+//        }
+//    }
+//}
+class CashReg(private val semaphore: Semaphore, private val customerIndex: Int) {
+    suspend fun run() {
         println("покупатель $customerIndex встал в очередь.")
-        try {
-            if (semaphore.tryAcquire(1, 2000, TimeUnit.MILLISECONDS)) {
-                semaphore.acquire()
+            semaphore.tryAcquire(1000, {
                 println("покупатель $customerIndex выбирает товары")
-                Thread.sleep(Random().nextInt(10000).toLong())
-                semaphore.release(2)
+                delay(1000)
+                semaphore.release()
                 println("покупатель $customerIndex сделал покупку и ушёл")
-            } else {
+            } , {
                 println("покупатель $customerIndex не дождался обслуживания и перешёл в другую очередь")
-                Thread.sleep(Random().nextInt(20000).toLong())
+                delay(1000)
                 run()
-            }
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
+            })
+        }
+    }
+
+
+suspend fun Semaphore.tryAcquire(
+    timeout: Long,
+    onAcquire: suspend () -> Unit,
+    onError: suspend () -> Unit
+) {
+    return if (this.tryAcquire()) {
+        onAcquire.invoke()
+    } else {
+        delay(timeout)
+        if (this.tryAcquire()) {
+            onAcquire.invoke()
+        } else {
+            onError.invoke()
         }
     }
 }

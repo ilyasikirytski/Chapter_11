@@ -8,10 +8,11 @@ package kot_A_6
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
 
 suspend fun main() = coroutineScope {
-    val semaphore = java.util.concurrent.Semaphore(3, false)
-    for (i in 0..5) {
+    val semaphore = Semaphore(1)
+    for (i in 0..10) {
         launch {
             CashReg(semaphore, i).run()
             delay(400)
