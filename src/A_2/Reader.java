@@ -12,8 +12,8 @@ public class Reader extends Thread {
     public void run() {
         try {
             System.out.printf("%s пришёл в билитотеку\n", Thread.currentThread().getName());
-            library.takeBookToReadingRoom();
-            library.takeBookHome();
+            library.takeBookToReadingRoom("LibraryBook1");
+            library.takeBookHome("HomeBook1");
         } catch (Exception e) {
             e.printStackTrace();
         }
