@@ -10,9 +10,9 @@ import java.util.concurrent.Semaphore;
 public class Main {
     public static void main(String[] args) {
         Semaphore semaphore = new Semaphore(5);
-        CashRegister cashRegister = new CashRegister(semaphore);
+        McDonalds mcDonalds = new McDonalds(2, semaphore);
         for (int i = 0; i < 10; i++) {
-            new Client("" + i, cashRegister).start();
+            new Client("" + i, mcDonalds).start();
         }
     }
 }
