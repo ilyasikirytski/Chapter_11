@@ -7,6 +7,7 @@
       <root url="jar://$KOTLIN_BUNDLED$/lib/kotlinx-coroutines-core-jvm.jar!/" />
       <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk7.jar!/" />
       <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8.jar!/" />
+      <root url="file://$KOTLIN_BUNDLED$/lib" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
@@ -15,6 +16,9 @@
       <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-test-sources.jar!/" />
       <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk7-sources.jar!/" />
       <root url="jar://$KOTLIN_BUNDLED$/lib/kotlin-stdlib-jdk8-sources.jar!/" />
+      <root url="file://$KOTLIN_BUNDLED$/lib" />
     </SOURCES>
+    <jarDirectory url="file://$KOTLIN_BUNDLED$/lib" recursive="false" />
+    <jarDirectory url="file://$KOTLIN_BUNDLED$/lib" recursive="false" type="SOURCES" />
   </library>
 </component>
