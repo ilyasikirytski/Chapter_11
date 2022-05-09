@@ -12,8 +12,14 @@ public class Reader extends Thread {
     public void run() {
         try {
             System.out.printf("%s пришёл в билитотеку\n", Thread.currentThread().getName());
-            library.takeBook("HomeBook1", Location.READING_ROOM);
-            library.takeBook("LibraryBook2", Location.HOME);
+            library.takeBook("HomeBook1");
+            library.takeBook("LibraryBook1");
+//            library.takeBook("LibraryBook1", Location.READING_ROOM);
+//            library.takeBook("LibraryBook2", Location.READING_ROOM);
+//            library.takeBook("HomeBook1", Location.HOME);
+//            library.takeBook("HomeBook2", Location.HOME);
+//            library.takeBook("LibraryBook1", Location.HOME);
+//            library.takeBook("LibraryBook2", Location.HOME);
 //            library.takeBookHome("HomeBook1");
         } catch (Exception e) {
             e.printStackTrace();
