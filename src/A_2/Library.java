@@ -14,59 +14,59 @@ public class Library {
     /*
     добавить выбор книги
      */
-    public void takeBookToReadingRoom(String nameOfBook) {
+    /*
+    сделать так что бы они могли брать несколько книг одновременно(не блокировать всюбиблиотеку)
+    избавиться от дублирования
+     */
+    public void takeBook(String nameOfBook, Location location) {
         try {
-            semaphore.acquire();
             String readerName = Thread.currentThread().getName();
             for (Book book : libraryBooks) {
                 if (book.getName().equals(nameOfBook)) {
                     if (book.isReadingInLibraryOnly) {
                         if (!book.isTaken) {
+                            semaphore.acquire();
                             book.isTaken = true;
-                            System.out.println(readerName + " взял " + book.getName() + " в зал");
+                            printTakeBookHome(readerName, book, location);
                             Thread.sleep(1000);
                             book.isTaken = false;
-                            System.out.println(readerName + " вернул книгу: " + book.getName());
+                            semaphore.release();
+                            printReturnBook(readerName, book);
                             Thread.sleep(1000);
                         } else {
-                            System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+                            printBookIsTaken(readerName, book);
                         }
                     } else {
-                        System.out.println(readerName + " хотел взять " + book.getName() + " в зал - но она доступна только для дома");
+                        printBookAvailableHomeOnly(readerName, book, location);
                     }
                 }
-                semaphore.release();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public void takeBookHome(String nameOfBook) {
-        try {
-            semaphore.acquire();
-            String readerName = Thread.currentThread().getName();
-            for (Book book : libraryBooks) {
-                if (book.getName().equals(nameOfBook)) {
-                    if (!book.isReadingInLibraryOnly) {
-                        if (!book.isTaken) {
-                            book.isTaken = true;
-                            System.out.println(readerName + " взял " + book.getName() + ", домой");
-                            Thread.sleep(1000);
-                            book.isTaken = false;
-                            System.out.println(readerName + " вернул книгу: " + book.getName());
-                            Thread.sleep(1000);
-                        } else {
-                            System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
-                        }
-                    } else {
-                        System.out.println(readerName + " хотел взять " + book.getName() + " домой - но она доступна только для читального зала");
-                    }
-                }
-                semaphore.release();
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private void printTakeBookHome(String readerName, Book book, Location location) {
+        if (location == Location.READING_ROOM) {
+            System.out.println(readerName + " взял " + book.getName() + " в зал");
+        } else {
+            System.out.println(readerName + " взял " + book.getName() + ", домой");
+        }
+    }
+
+    private void printReturnBook(String readerName, Book book) {
+        System.out.println(readerName + " вернул книгу: " + book.getName());
+    }
+
+    private void printBookIsTaken(String readerName, Book book) {
+        System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+    }
+
+    private void printBookAvailableHomeOnly(String readerName, Book book, Location location) {
+        if (location == Location.READING_ROOM) {
+            System.out.println(readerName + " хотел взять " + book.getName() + " в зал - но она доступна только для дома");
+        } else {
+            System.out.println(readerName + " хотел взять " + book.getName() + " домой - но она доступна только для читального зала");
         }
     }
 
