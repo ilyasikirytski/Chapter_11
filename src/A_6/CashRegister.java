@@ -11,19 +11,17 @@ public class CashRegister {
         this.semaphore = semaphore;
         this.numberOfCashRegister = numberOfCashRegister;
     }
-/*
-написать вторую кассу
- */
-    public boolean getService() throws InterruptedException {
+
+    public boolean tryServe(String restaurantName) throws InterruptedException {
         String customerIndex = Thread.currentThread().getName();
         if (semaphore.tryAcquire(2000, TimeUnit.MILLISECONDS)) {
-            System.out.printf("покупатель №%s встал в очередь %s.\n", customerIndex, numberOfCashRegister);
+            System.out.printf("%s покупатель №%s встал в очередь %s.\n", restaurantName, customerIndex, numberOfCashRegister);
             Thread.sleep(2000);
-            System.out.printf("покупатель №%s сделал покупку в %s и ушёл\n", customerIndex, numberOfCashRegister);
+            System.out.printf("%s покупатель №%s сделал покупку в %s и ушёл\n", restaurantName, customerIndex, numberOfCashRegister);
             semaphore.release();
             return true;
         } else {
-            System.out.printf("покупатель №%s не дождался обслуживания %s и перешёл в другую очередь\n", customerIndex, numberOfCashRegister);
+            System.out.printf("%s покупатель №%s не дождался обслуживания %s и перешёл в другую очередь\n", restaurantName, customerIndex, numberOfCashRegister);
             return false;
         }
     }

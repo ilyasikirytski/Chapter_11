@@ -1,19 +1,17 @@
 package A_6;
 
 public class Client extends Thread {
-    McDonalds mcDonalds;
+    AbstractRestaurant restaurant;
 
-    public Client(String clientNumber, McDonalds mcDonalds) {
+    public Client(String clientNumber, AbstractRestaurant restaurant) {
         super(clientNumber);
-        this.mcDonalds = mcDonalds;
+        this.restaurant = restaurant;
     }
-/*
-написать выбор рандомной кассы, которая возвращает Boolean. и в случае false - переход в другую кассу
- */
+
     @Override
     public void run() {
         try {
-            mcDonalds.getServ();
+            restaurant.serve();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

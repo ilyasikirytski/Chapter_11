@@ -11,8 +11,10 @@ public class Main {
     public static void main(String[] args) {
         Semaphore semaphore = new Semaphore(5);
         McDonalds mcDonalds = new McDonalds(2, semaphore);
+        KFC kfc = new KFC(2, semaphore);
         for (int i = 0; i < 10; i++) {
             new Client("" + i, mcDonalds).start();
+            new Client("" + i, kfc).start();
         }
     }
 }
