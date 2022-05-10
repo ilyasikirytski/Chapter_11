@@ -11,25 +11,24 @@ public class Library {
         this.libraryBooks.add(book);
     }
 
-//    как сделать чтобы читатель брал несколько книг?
-    public void takeBook(String nameOfBook) {
+    public void takeBook(String... namesOfBook) {
         try {
             String readerName = Thread.currentThread().getName();
             for (Book book : libraryBooks) {
-                if (book.getName().equals(nameOfBook)) {
-                    if (book.isReadingInLibraryOnly) {
-                        if (!book.isTaken) {
-                            semaphore.acquire();
-                            takeConcreteBook(readerName, book, book.isReadingInLibraryOnly);
+                for (String s : namesOfBook) {
+                    if (book.getName().equals(s)) {
+                        if (book.isReadingInLibraryOnly) {
+                            if (!book.isTaken) {
+                                takeConcreteBook(readerName, book, true);
+                            } else {
+                                printBookIsTaken(readerName, book);
+                            }
                         } else {
-                            printBookIsTaken(readerName, book);
-                        }
-                    } else {
-                        if (!book.isTaken) {
-                            takeConcreteBook(readerName, book, false);
-                        } else {
-                            printBookIsTaken(readerName, book);
-                            semaphore.release();
+                            if (!book.isTaken) {
+                                takeConcreteBook(readerName, book, false);
+                            } else {
+                                printBookIsTaken(readerName, book);
+                            }
                         }
                     }
                 }
@@ -40,24 +39,30 @@ public class Library {
     }
 
     private void takeConcreteBook(String readerName, Book book, boolean isReadingInLibraryOnly) throws InterruptedException {
+        semaphore.acquire();
         book.isTaken = true;
         if (isReadingInLibraryOnly) {
             System.out.println(readerName + " взял " + book.getName() + " в зал");
         } else {
             System.out.println(readerName + " взял " + book.getName() + ", домой");
         }
+        semaphore.release();
         Thread.sleep(3000);
-        book.isTaken = false;
         printReturnBook(readerName, book);
         Thread.sleep(1000);
     }
 
-    private void printReturnBook(String readerName, Book book) {
+    private void printReturnBook(String readerName, Book book) throws InterruptedException {
+        semaphore.acquire();
+        book.isTaken = false;
         System.out.println(readerName + " вернул книгу: " + book.getName());
+        semaphore.release();
     }
 
-    private void printBookIsTaken(String readerName, Book book) {
+    private void printBookIsTaken(String readerName, Book book) throws InterruptedException {
+        semaphore.acquire();
         System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+        semaphore.release();
     }
 
     @Override
