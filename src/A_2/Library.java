@@ -41,12 +41,12 @@ public class Library {
     private void takeConcreteBook(String readerName, Book book, boolean isReadingInLibraryOnly) throws InterruptedException {
         semaphore.acquire();
         book.isTaken = true;
+        semaphore.release();
         if (isReadingInLibraryOnly) {
             System.out.println(readerName + " взял " + book.getName() + " в зал");
         } else {
             System.out.println(readerName + " взял " + book.getName() + ", домой");
         }
-        semaphore.release();
         Thread.sleep(3000);
         printReturnBook(readerName, book);
         Thread.sleep(1000);

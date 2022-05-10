@@ -13,7 +13,7 @@ public class Main {
         library.addBook(new Book(true, "LibraryBook2"));
         library.addBook(new Book(false, "HomeBook2"));
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 2; i++) {
             new Reader(library, "" + i).start();
             Thread.sleep(1000);
         }
