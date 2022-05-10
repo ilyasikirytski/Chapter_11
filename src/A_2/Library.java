@@ -17,18 +17,10 @@ public class Library {
             for (Book book : libraryBooks) {
                 for (String nameOfBook : namesOfBook) {
                     if (book.getName().equals(nameOfBook)) {
-                        if (book.isReadingInLibraryOnly) {
-                            if (!book.isTaken) {
-                                takeConcreteBook(reader, readerName, book, true);
-                            } else {
-                                printBookIsTaken(readerName, book);
-                            }
+                        if (!book.isTaken) {
+                            takeConcreteBook(reader, readerName, book, book.isReadingInLibraryOnly);
                         } else {
-                            if (!book.isTaken) {
-                                takeConcreteBook(reader, readerName, book, false);
-                            } else {
-                                printBookIsTaken(readerName, book);
-                            }
+                            printBookIsTaken(readerName, book);
                         }
                     }
                 }
