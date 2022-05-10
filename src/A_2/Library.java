@@ -11,6 +11,7 @@ public class Library {
         this.libraryBooks.add(book);
     }
 
+//    как сделать чтобы читатель брал несколько книг?
     public void takeBook(String nameOfBook) {
         try {
             String readerName = Thread.currentThread().getName();
