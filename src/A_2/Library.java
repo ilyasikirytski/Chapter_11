@@ -11,7 +11,7 @@ public class Library {
         this.libraryBooks.add(book);
     }
 
-    public void takeBook(String... namesOfBook) {
+    public void takeBook(Reader reader, String... namesOfBook) {
         String readerName = Thread.currentThread().getName();
         try {
             for (Book book : libraryBooks) {
@@ -19,13 +19,13 @@ public class Library {
                     if (book.getName().equals(nameOfBook)) {
                         if (book.isReadingInLibraryOnly) {
                             if (!book.isTaken) {
-                                takeConcreteBook(readerName, book, true);
+                                takeConcreteBook(reader, readerName, book, true);
                             } else {
                                 printBookIsTaken(readerName, book);
                             }
                         } else {
                             if (!book.isTaken) {
-                                takeConcreteBook(readerName, book, false);
+                                takeConcreteBook(reader, readerName, book, false);
                             } else {
                                 printBookIsTaken(readerName, book);
                             }
@@ -33,41 +33,35 @@ public class Library {
                     }
                 }
             }
-            returnBook(namesOfBook);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void takeConcreteBook(String readerName, Book book, boolean isReadingInLibraryOnly) throws InterruptedException {
+    private void takeConcreteBook(Reader reader, String readerName, Book book, boolean isReadingInLibraryOnly) throws InterruptedException {
         semaphore.acquire();
-        book.isTaken = true;
-        semaphore.release();
         if (isReadingInLibraryOnly) {
             System.out.println(readerName + " взял " + book.getName() + " в зал");
         } else {
             System.out.println(readerName + " взял " + book.getName() + ", домой");
         }
+        book.isTaken = true;
+        libraryBooks.remove(book);
+        reader.readerBooks.add(book);
+        semaphore.release();
         Thread.sleep(3000);
-//        printReturnBook(readerName, book);
-//        Thread.sleep(1000);
     }
 
-    public void returnBook(String... namesOfBook) throws InterruptedException {
+    public void returnBook(Reader reader) throws InterruptedException {
         String readerName = Thread.currentThread().getName();
-        semaphore.acquire();
-        for (Book b : libraryBooks) {
-            for (String s : namesOfBook) {
-                if (b.getName().equals(s)) {
-                    if (b.isTaken) {
-                        b.isTaken = false;
-                        System.out.println(readerName + " вернул книгу: " + b.getName());
-                    }
-                }
-            }
+        for (Book b : reader.readerBooks) {
+            semaphore.acquire();
+            b.isTaken = false;
+            libraryBooks.add(b);
+            reader.readerBooks.remove(b);
+            System.out.println(readerName + " вернул книгу: " + b.getName());
+            semaphore.release();
         }
-//        book.isTaken = false;
-        semaphore.release();
     }
 
     private void printBookIsTaken(String readerName, Book book) throws InterruptedException {
