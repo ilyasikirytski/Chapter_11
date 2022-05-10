@@ -11,13 +11,6 @@ public class Library {
         this.libraryBooks.add(book);
     }
 
-    /*
-    добавить выбор книги
-     */
-    /*
-    сделать так что бы они могли брать несколько книг одновременно(не блокировать всюбиблиотеку)
-    избавиться от дублирования
-     */
     public void takeBook(String nameOfBook) {
         try {
             String readerName = Thread.currentThread().getName();
@@ -26,29 +19,16 @@ public class Library {
                     if (book.isReadingInLibraryOnly) {
                         if (!book.isTaken) {
                             semaphore.acquire();
-                            book.isTaken = true;
-                            System.out.println(readerName + " взял " + book.getName() + " в зал");
-                            Thread.sleep(10000);
-                            book.isTaken = false;
-                            System.out.println(readerName + " вернул книгу: " + book.getName());
-                            Thread.sleep(1000);
-//                            semaphore.release();
+                            takeConcreteBook(readerName, book, book.isReadingInLibraryOnly);
                         } else {
-                            System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+                            printBookIsTaken(readerName, book);
                         }
                     } else {
-                        System.out.println(readerName + " хотел взять " + book.getName() + " в зал - но она доступна только для дома");
                         if (!book.isTaken) {
-//                            semaphore.acquire();
-                            book.isTaken = true;
-                            System.out.println(readerName + " взял " + book.getName() + ", домой");
-                            Thread.sleep(10000);
-                            book.isTaken = false;
-                            System.out.println(readerName + " вернул книгу: " + book.getName());
-                            Thread.sleep(1000);
-                            semaphore.release();
+                            takeConcreteBook(readerName, book, false);
                         } else {
-                            System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+                            printBookIsTaken(readerName, book);
+                            semaphore.release();
                         }
                     }
                 }
@@ -58,28 +38,39 @@ public class Library {
         }
     }
 
-//    private void printTakeBookHome(String readerName, Book book, Location location){
+    private void takeConcreteBook(String readerName, Book book, boolean isReadingInLibraryOnly) throws InterruptedException {
+        book.isTaken = true;
+        if (isReadingInLibraryOnly) {
+            System.out.println(readerName + " взял " + book.getName() + " в зал");
+        } else {
+            System.out.println(readerName + " взял " + book.getName() + ", домой");
+        }
+        Thread.sleep(3000);
+        book.isTaken = false;
+        printReturnBook(readerName, book);
+        Thread.sleep(1000);
+    }
+
+    private void printReturnBook(String readerName, Book book) {
+        System.out.println(readerName + " вернул книгу: " + book.getName());
+    }
+
+    private void printBookIsTaken(String readerName, Book book) {
+        System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+    }
+
+    @Override
+    public String toString() {
+        return "Library{" +
+                "books=" + libraryBooks +
+                '}';
+    }
+}
+//    private void printBookAvailableHomeOnly(String readerName, Book book, Location location) throws InterruptedException {
 //        if (location == Location.READING_ROOM) {
-//            System.out.println(readerName + " взял " + book.getName() + " в зал");
-//        } else {
-//            System.out.println(readerName + " взял " + book.getName() + ", домой");
-//        }
-//    }
-//
-//    private void printReturnBook(String readerName, Book book){
-//        System.out.println(readerName + " вернул книгу: " + book.getName());
-//    }
-//
-//    private void printBookIsTaken(String readerName, Book book){
-//        System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
-//    }
-//
-//    private void printBookAvailableHomeOnly(String readerName, Book book, Location location){
-//        if (location == Location.READING_ROOM) {
-//            System.out.println(readerName + " хотел взять " + book.getName() + " в зал - но она доступна только для дома");
-//        } else {
 //            System.out.println(readerName + " хотел взять " + book.getName() + " домой - но она доступна только для читального зала");
-//
+//        } else {
+//            System.out.println(readerName + " хотел взять " + book.getName() + " в зал - но она доступна только для дома");
 //        }
 //    }
 
@@ -109,12 +100,6 @@ public class Library {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-//    }
 
-    @Override
-    public String toString() {
-        return "Library{" +
-                "books=" + libraryBooks +
-                '}';
-    }
-}
+//    }
+//}

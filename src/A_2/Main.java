@@ -6,7 +6,7 @@
 package A_2;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Library library = new Library();
         library.addBook(new Book(true, "LibraryBook1"));
         library.addBook(new Book(false, "HomeBook1"));
@@ -15,6 +15,7 @@ public class Main {
 
         for (int i = 0; i < 5; i++) {
             new Reader(library, "" + i).start();
+            Thread.sleep(1000);
         }
     }
 }
