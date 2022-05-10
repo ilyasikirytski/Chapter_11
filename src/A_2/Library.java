@@ -15,8 +15,8 @@ public class Library {
         try {
             String readerName = Thread.currentThread().getName();
             for (Book book : libraryBooks) {
-                for (String s : namesOfBook) {
-                    if (book.getName().equals(s)) {
+                for (String nameOfBook : namesOfBook) {
+                    if (book.getName().equals(nameOfBook)) {
                         if (book.isReadingInLibraryOnly) {
                             if (!book.isTaken) {
                                 takeConcreteBook(readerName, book, true);
