@@ -1,5 +1,6 @@
 package A_2;
 
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -11,55 +12,56 @@ public class Library {
         this.libraryBooks.add(book);
     }
 
-    public void takeBook(Reader reader, String... namesOfBook) {
+    public void takeBook(Reader reader, List<String> namesOfBook) {
         String readerName = Thread.currentThread().getName();
-        try {
-            for (Book book : libraryBooks) {
-                for (String nameOfBook : namesOfBook) {
-                    if (book.getName().equals(nameOfBook)) {
-                        if (!book.isTaken) {
-                            takeConcreteBook(reader, readerName, book, book.isReadingInLibraryOnly);
-                        } else {
-                            printBookIsTaken(readerName, book);
-                        }
-                    }
-                }
+        for (Book book : libraryBooks) {
+            boolean isLibraryHasBook = namesOfBook.contains(book.getName());
+            if (isLibraryHasBook && !book.isTaken) {
+                takeConcreteBook(reader, readerName, book);
+            } else if (isLibraryHasBook) {
+                printBookIsTaken(readerName, book);
             }
+        }
+    }
+
+    private void takeConcreteBook(Reader reader, String readerName, Book book) {
+        try {
+            semaphore.acquire();
+            if (book.isReadingInLibraryOnly) {
+                System.out.println(readerName + " взял " + book.getName() + " в зал");
+            } else {
+                System.out.println(readerName + " взял " + book.getName() + ", домой");
+            }
+            book.isTaken = true;
+            libraryBooks.remove(book);
+            reader.addBooks(book);
+            semaphore.release();
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    private void takeConcreteBook(Reader reader, String readerName, Book book, boolean isReadingInLibraryOnly) throws InterruptedException {
-        semaphore.acquire();
-        if (isReadingInLibraryOnly) {
-            System.out.println(readerName + " взял " + book.getName() + " в зал");
-        } else {
-            System.out.println(readerName + " взял " + book.getName() + ", домой");
-        }
-        book.isTaken = true;
-        libraryBooks.remove(book);
-        reader.readerBooks.add(book);
-        semaphore.release();
-        Thread.sleep(3000);
-    }
-
-    public void returnBook(Reader reader) throws InterruptedException {
+    public void returnBook(CopyOnWriteArrayList<Book> books) throws InterruptedException {
         String readerName = Thread.currentThread().getName();
-        for (Book b : reader.readerBooks) {
+        for (Book book : books) {
             semaphore.acquire();
-            b.isTaken = false;
-            libraryBooks.add(b);
-            reader.readerBooks.remove(b);
-            System.out.println(readerName + " вернул книгу: " + b.getName());
+            book.isTaken = false;
+            libraryBooks.add(book);
+            books.remove(book);
+            System.out.println(readerName + " вернул книгу: " + book.getName());
             semaphore.release();
         }
     }
 
-    private void printBookIsTaken(String readerName, Book book) throws InterruptedException {
-        semaphore.acquire();
-        System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
-        semaphore.release();
+    private void printBookIsTaken(String readerName, Book book) {
+        try {
+            semaphore.acquire();
+            System.out.println(readerName + " хотел взять " + book.getName() + " но она занята");
+            semaphore.release();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
